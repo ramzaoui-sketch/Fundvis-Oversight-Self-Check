@@ -204,7 +204,11 @@ function render(d) {
     $('weaks').textContent = 'The question most people struggle with shows up here.';
   }
 
-  const rec = (d.recent || []).slice(0, 3);
+  const all8 = d.recent || [];
+  let rec = all8.slice(0, 3);
+  // Always show both checks: if no delegate score is in the top 3, swap in the latest real one
+  const lastDel = all8.find(r => r.area === 'del');
+  if (lastDel && !rec.some(r => r.area === 'del')) rec = rec.slice(0, 2).concat(lastDel);
   $('feed').innerHTML = rec.length
     ? rec.map(r => '<div class="row"><span class="a">' + (AREA[r.area] || 'Self check') + '</span><span><span class="p">' + r.pct + '%</span></span></div>').join('')
     : '<div class="note">New scores appear here as people finish.</div>';
