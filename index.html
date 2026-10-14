@@ -365,6 +365,7 @@ document.getElementById('topchip').textContent = TEXT.topChip;
 document.getElementById('ftr').textContent = TEXT.footer;
 const path = location.pathname.replace(/\//g,'');
 const SRC = new URLSearchParams(location.search).get('src') || (['nfc','qr','card'].includes(path) ? path : 'direct');
+const EVENT = (new URLSearchParams(location.search).get('event') || '').trim().toLowerCase().slice(0,40);
 let area = null, i = 0, A = [], RES = null, lock = false;
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function show(h){ app.innerHTML = '<div class="screen">'+h+'</div>'; window.scrollTo(0,0); }
@@ -416,6 +417,7 @@ function result(){
   const prof=TEXT.profiles[(rp>=55?'H':'L')+(op>=55?'H':'L')];
   const gaps=Q.map((q,k)=>({q,s:pts(A[k])})).filter(g=>g.s<2).sort((a,b)=>a.s-b.s);
   RES={pct,rp,op,band,prof,gapsList:gaps,gaps:gaps.map(g=>g.q.tag).join(', ')||'none'};
+  saveScore();
   const R=78, C=2*Math.PI*R;
   const col = pct>=80?'var(--orange2)':pct>=55?'var(--orange)':pct>=30?'var(--terra)':'var(--risk)';
   show(`<div class="k" style="text-align:center">${TEXT.resultKicker} · ${TEXT.paths[area].title}</div>
@@ -448,6 +450,14 @@ function result(){
   },60));
   document.getElementById('f').onsubmit=submit;
 }
+/* Saves the score anonymously (no name, no email) so the live leaderboard counts everyone */
+function saveScore(){
+  if(!ENGINE_URL || !RES) return;
+  const Q=QUIZZES[area];
+  const body={type:'score', area, areaTitle:TEXT.paths[area].title, src:SRC, event:EVENT,
+    pct:RES.pct, rp:RES.rp, op:RES.op, answers:Q.map((q,k)=>({tag:q.tag, score:2-A[k]}))};
+  try{ fetch(ENGINE_URL,{method:'POST',keepalive:true,headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)}).catch(()=>{}); }catch(e){}
+}
 async function submit(e){
   e.preventDefault(); const d=Object.fromEntries(new FormData(e.target)); const er=document.getElementById('er');
   const ok=d.firstname&&d.lastname&&/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.email||'')&&d.company&&d.consent;
@@ -455,7 +465,7 @@ async function submit(e){
   const sb=document.getElementById('sb'); sb.disabled=true; sb.textContent=TEXT.sending;
   const Q=QUIZZES[area];
   const payload={
-    area, areaTitle:TEXT.paths[area].title, src:SRC,
+    area, areaTitle:TEXT.paths[area].title, src:SRC, event:EVENT,
     first:d.firstname.trim(), last:d.lastname.trim(), email:d.email.trim(), company:d.company.trim(),
     pct:RES.pct, rp:RES.rp, op:RES.op, band:RES.band.name, bandText:RES.band.text, profile:RES.prof[0], profileText:RES.prof[1],
     gaps:RES.gapsList.slice(0,3).map(g=>({tag:g.q.tag, why:g.q.why, answer:g.q.answers[A[Q.indexOf(g.q)]]})),
