@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Oversight self check · Fundvis</title>
+<meta name="description" content="Eight questions. Two minutes. See how your oversight compares to other fund managers.">
+<link rel="icon" href="fundvis-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#181818; --soft:#6F665F; --mute:#A39A92;
+  --orange:#EF9355; --orange2:#E07E3C; --terra:#D99661; --risk:#C56A34;
+  --peach:#FCEADD; --peach2:#FDF4EC; --page:#FBF4EC; --white:#fff;
+  --line:rgba(24,24,24,.09); --line2:rgba(24,24,24,.18);
+  --display:'Poppins',system-ui,sans-serif; --body:'Inter',system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--page);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased}
+body{min-height:100vh;min-height:100dvh}
+.wrap{max-width:480px;margin:0 auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;padding:0 22px}
+/* top bar */
+.top{display:flex;align-items:center;justify-content:space-between;padding:20px 0 6px;min-height:58px}
+.logo{height:30px;width:120px;display:flex;align-items:center}
+.logo img{max-height:30px;max-width:120px;display:block}
+.chip-top{font:600 11px var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--orange2);
+  background:var(--white);border:1px solid var(--line);padding:7px 12px;border-radius:99px}
+main{flex:1;display:flex;flex-direction:column;padding:18px 0 28px}
+.screen{display:flex;flex-direction:column;flex:1;animation:in .45s cubic-bezier(.22,1,.36,1)}
+@keyframes in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.k{font:600 12px var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--orange2);margin-bottom:14px}
+h1{font:700 clamp(32px,9vw,40px)/1.08 var(--display);letter-spacing:-.02em}
+h2{font:700 24px/1.2 var(--display);letter-spacing:-.01em}
+.hl{display:inline;background:linear-gradient(transparent 58%,rgba(239,147,85,.38) 58%);font:600 19px/1.5 var(--display);color:var(--ink);padding:0 2px}
+.sub{margin-top:16px}
+p{color:var(--soft);line-height:1.6;font-size:15px}
+/* steps */
+.steps{display:flex;gap:8px;margin:30px 0 26px}
+.steps div{flex:1;background:var(--white);border:1px solid var(--line);border-radius:14px;padding:12px 10px;font-size:12.5px;line-height:1.35;color:var(--soft)}
+.steps b{display:block;font:700 13px var(--display);color:var(--ink);margin-bottom:3px}
+.steps i{display:inline-flex;width:20px;height:20px;border-radius:50%;background:var(--peach);color:var(--orange2);font:700 11px var(--display);font-style:normal;align-items:center;justify-content:center;margin-bottom:8px}
+/* path cards */
+.pick-label{font:600 13px var(--display);margin-bottom:10px}
+.paths{display:grid;gap:12px}
+.path{all:unset;cursor:pointer;display:flex;align-items:center;gap:16px;background:var(--white);border:1.5px solid var(--line);border-radius:18px;padding:18px;
+  transition:transform .15s,border-color .2s,box-shadow .2s;box-shadow:0 10px 30px -22px rgba(120,70,30,.5)}
+.path:hover{border-color:var(--orange);transform:translateY(-2px)}
+.path:active{transform:scale(.98)}
+.path .ic{flex:0 0 52px;height:52px;border-radius:14px;background:var(--peach);display:flex;align-items:center;justify-content:center}
+.path .ic svg{width:26px;height:26px;stroke:var(--orange2)}
+.path .t{flex:1}.path .t b{display:block;font:600 17px var(--display);margin-bottom:2px}
+.path .t span{font-size:13px;color:var(--soft)}
+.path .ar{font:600 20px var(--display);color:var(--orange2);transition:transform .2s}
+.path:hover .ar{transform:translateX(4px)}
+.scope{font-size:12px;color:var(--mute);text-align:center;margin-top:18px}
+/* question */
+.qhead{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+.backbtn{all:unset;cursor:pointer;width:36px;height:36px;border-radius:50%;background:var(--white);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font:600 16px var(--display);color:var(--soft)}
+.dots{flex:1;display:flex;gap:5px}
+.dots span{flex:1;height:6px;border-radius:99px;background:var(--line);transition:background .3s}
+.dots span.dn{background:var(--orange)}.dots span.now{background:var(--terra);opacity:.55}
+.count{font:600 13px var(--display);color:var(--soft);min-width:34px;text-align:right}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.tag{font:600 11px var(--body);letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border-radius:99px}
+.tag.reg{background:var(--ink);color:var(--peach2)}.tag.ops{background:var(--orange);color:var(--white)}
+.tag.topic{background:var(--white);border:1px solid var(--line);color:var(--soft)}
+.qt{font:600 clamp(21px,5.8vw,25px)/1.3 var(--display);letter-spacing:-.01em;margin-bottom:22px}
+.opts{display:grid;gap:11px}
+.opt{all:unset;cursor:pointer;display:flex;align-items:center;gap:14px;background:var(--white);border:1.5px solid var(--line);border-radius:16px;padding:16px;
+  font-size:15px;line-height:1.4;transition:border-color .15s,background .15s,transform .12s}
+.opt:hover{border-color:var(--terra)}
+.opt:active{transform:scale(.985)}
+.opt .l{flex:0 0 30px;height:30px;border-radius:10px;background:var(--peach2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font:700 13px var(--display);color:var(--soft);transition:all .15s}
+.opt.sel{border-color:var(--orange);background:var(--peach)}
+.opt.sel .l{background:var(--orange);border-color:var(--orange);color:var(--white)}
+.whylink{all:unset;cursor:pointer;margin:18px auto 0;font:500 13px var(--body);color:var(--soft);display:flex;align-items:center;gap:6px}
+.whylink::before{content:"i";display:inline-flex;width:18px;height:18px;border-radius:50%;border:1px solid var(--line2);align-items:center;justify-content:center;font:700 10px var(--display);color:var(--orange2)}
+.whylink::after{content:"›";transition:transform .2s;display:inline-block}
+.whylink.on::after{transform:rotate(90deg)}
+.whybox{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s ease}
+.whybox.open{grid-template-rows:1fr}
+.whybox>div{overflow:hidden;font-size:13.5px;line-height:1.55;color:var(--soft);text-align:center;padding:0 12px}
+.whybox.open>div{padding:10px 12px 0}
+.why{margin-top:auto;padding-top:22px}
+.why .wb{display:flex;gap:10px;align-items:flex-start;background:var(--peach2);border:1px dashed var(--line2);border-radius:14px;padding:13px 14px;font-size:13px;line-height:1.5;color:var(--soft)}
+.why b{color:var(--ink);font-weight:600}
+.why .bi{flex:0 0 22px;height:22px;border-radius:50%;background:var(--white);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font:700 12px var(--display);color:var(--orange2)}
+.basis{font-size:11px;color:var(--mute);margin-top:8px;padding-left:2px}
+/* result */
+.ring{position:relative;width:190px;height:190px;margin:10px auto 14px}
+.ring svg{transform:rotate(-90deg)}
+.ring .c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .n{font:700 54px/1 var(--display)}.ring .n small{font-size:22px;color:var(--soft)}
+.bp{display:inline-block;background:#fff;border:1.5px solid;border-radius:99px;padding:7px 16px;font:600 12px var(--body);letter-spacing:.1em;text-transform:uppercase;margin:0 0 20px}
+.ring .b{font:600 12px var(--body);letter-spacing:.1em;text-transform:uppercase;margin-top:6px;text-align:center;max-width:140px}
+.band{text-align:center;font-size:14.5px;line-height:1.6;color:var(--soft);margin:4px 0 22px}
+.card{background:var(--white);border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:14px}
+.card .lbl{font:600 11px var(--body);letter-spacing:.13em;text-transform:uppercase;color:var(--mute);margin-bottom:8px}
+.prof b{display:block;font:700 20px/1.25 var(--display);margin-bottom:4px}
+.prof p{font-size:14px}
+.bar{margin-top:14px}.bar .bl{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px}.bar .bl b{font:600 13px var(--display)}
+.track{height:10px;border-radius:99px;background:var(--peach);overflow:hidden}.track i{display:block;height:100%;width:0;border-radius:99px;transition:width 1.1s cubic-bezier(.22,1,.36,1)}
+.gap{display:flex;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.gap:first-of-type{border-top:0;padding-top:4px}
+.gap .gi{flex:0 0 24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:700 12px var(--display)}
+.gap .gi.g0{background:#F6DECB;color:var(--risk)}.gap .gi.g1{background:var(--peach);color:var(--orange2)}
+.gap b{display:block;font:600 14px var(--display);margin-bottom:2px}
+.gap span{font-size:13px;line-height:1.5;color:var(--soft)}
+.allgood{font-size:14px;color:var(--soft)}
+.headline{text-align:center;font:500 18px/1.4 var(--display);color:var(--soft);margin:0 0 18px}
+.headline b{color:var(--ink);font-weight:700;display:block;font-size:22px}
+.locks{display:grid;gap:10px;margin-bottom:16px}
+.lock{position:relative;background:var(--white);border:1px solid var(--line);border-radius:16px;padding:14px 14px 14px 56px;overflow:hidden;opacity:0;animation:in .5s cubic-bezier(.22,1,.36,1) forwards}
+.lock:nth-child(1){animation-delay:.9s}.lock:nth-child(2){animation-delay:1.05s}.lock:nth-child(3){animation-delay:1.2s}
+.lk{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:10px;background:var(--peach);color:var(--orange2);display:flex;align-items:center;justify-content:center}
+.lk svg{width:16px;height:16px}
+.lt{font:600 14px var(--display);margin-bottom:6px}
+.blur{filter:blur(5px);user-select:none;pointer-events:none;font-size:13px;color:var(--soft);display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.blur b{display:block;width:100%;color:var(--ink);font:600 14px var(--display)}
+.blur .pill{background:var(--peach);color:var(--orange2);border-radius:99px;padding:4px 10px;font-size:12px;font-weight:600}
+.fake{width:100%;height:8px;border-radius:99px;background:var(--peach);overflow:hidden}.fake i{display:block;height:100%;background:var(--orange);border-radius:99px}
+.reassure{text-align:center;font-size:12px;line-height:1.5;color:#9C8F84;margin-top:12px}
+.ck a,.disc a{color:inherit;text-decoration:underline;font-weight:600}
+.formcard{opacity:0;animation:in .5s cubic-bezier(.22,1,.36,1) 1.35s forwards}
+/* unlocked */
+.unl .hero{border-radius:24px;padding:26px 24px;background:linear-gradient(135deg,#FDE3CC,#F7B98A);margin-bottom:12px;animation:in .5s ease}
+.hk{font:700 11px var(--body);letter-spacing:.16em;text-transform:uppercase;color:#B5602A}
+.hn{font:800 76px/1 var(--display);letter-spacing:-.04em;color:#14141A;margin:10px 0 10px}
+.hb{display:inline-block;background:#fff;color:#B5602A;font:700 13px var(--body);padding:7px 14px;border-radius:20px}
+.hero p{color:#5A4A3E;font-size:14px;margin-top:14px}
+.ucard{background:var(--white);border-radius:20px;padding:20px;margin-bottom:12px;border:1px solid var(--line)}
+.ucard .lbl{font:700 11px var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin-bottom:10px}
+.ch{font:800 22px/1.25 var(--display);color:#14141A;margin-bottom:6px}
+.cs{font-size:13.5px;color:var(--soft);margin-bottom:16px;line-height:1.5}
+.cb{margin-bottom:14px}.cl{display:flex;justify-content:space-between;font-size:13px;color:var(--soft);margin-bottom:6px}
+.cl b{font:700 15px var(--display)}.cl b.you{color:var(--orange2)}.cl b.avg{color:var(--soft)}.cl b.tp{color:var(--soft)}
+.ct{height:14px;border-radius:99px;background:#F3EEE8;overflow:hidden}.ct.sm{height:8px}
+.ct i{display:block;height:100%;width:0;border-radius:99px;transition:width 1.1s cubic-bezier(.22,1,.36,1)}
+.ct i.you{background:var(--orange2)}.ct i.avg{background:#B9B4AD}.ct i.tp{background:#14141A}.ct i.ink{background:#14141A}
+.demo{font-size:11px;color:var(--mute);text-align:right}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.two .ucard{margin-bottom:12px}
+.pn{font:800 17px/1.25 var(--display);margin-bottom:6px}.pt{font-size:13px;color:var(--soft);line-height:1.5}
+.rl{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px}.rl b{font-weight:700}
+.ucard.cream{background:#FFF4EA;border-color:transparent}
+.fx{display:flex;gap:12px;padding:12px 0;border-top:1px solid #F1E3D6}.fx:first-of-type{border-top:0;padding-top:2px}
+.fn{flex:0 0 28px;height:28px;border-radius:50%;background:var(--orange2);color:#fff;font:700 13px/28px var(--display);text-align:center}
+.fx b{display:block;font:700 15px var(--display);margin-bottom:3px}.fx span{display:block;font-size:13px;color:var(--soft);line-height:1.5}
+.fx em{display:block;font-style:normal;font-size:12.5px;font-weight:600;color:var(--orange2);margin-top:5px}
+.sum{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}.sum span{font:700 12.5px var(--body);padding:5px 11px;border-radius:14px}
+.dots2{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px}.dots2 div{font-size:12.5px;color:var(--soft);display:flex;align-items:center;gap:7px}
+.dots2 i{flex:0 0 8px;height:8px;border-radius:50%}
+.ctacard{text-align:center;border:2px solid #F4A267}.ctacard h3{font:800 20px/1.25 var(--display);margin-bottom:8px}
+.ctacard p{font-size:14px;margin-bottom:16px}.sent{font-size:12.5px;color:#2F7A4D;margin-top:12px;font-weight:600}
+@media (max-width:370px){.two{grid-template-columns:1fr}}
+/* form */
+.formcard{background:var(--ink);color:var(--peach2);border-radius:20px;padding:22px 18px;margin:8px 0 14px}
+.formcard h2{color:var(--white);font-size:22px;margin-bottom:8px}
+.formcard h2 em{font-style:normal;color:var(--orange)}
+.formcard p{color:#D9CFC6;font-size:14px;margin-bottom:16px}
+.formcard h2{margin-bottom:16px}
+.row2{display:flex;gap:9px}.row2 input{flex:1;min-width:0}
+input[type=text],input[type=email]{width:100%;padding:14px;border:1px solid transparent;border-radius:12px;font:15px var(--body);color:var(--ink);background:var(--peach2);margin-bottom:9px}
+input:focus{outline:2px solid var(--orange)}
+.ck{display:flex;gap:10px;font-size:12px;color:#CFC4BA;line-height:1.45;margin:6px 0 14px;cursor:pointer}
+.ck input{margin-top:2px;width:16px;height:16px;flex:0 0 16px;accent-color:var(--orange)}
+.err{display:none;color:#FFB48A;font-size:13px;margin-bottom:10px}
+.btn{all:unset;box-sizing:border-box;cursor:pointer;display:block;width:100%;text-align:center;border-radius:14px;padding:16px;font:600 16px var(--display);transition:transform .12s,filter .15s}
+.btn:active{transform:scale(.98)}
+.btn.o{background:var(--orange);color:var(--white)}.btn.o:hover{filter:brightness(.96)}
+.btn.o[disabled]{opacity:.6;cursor:wait}
+.btn.g{background:var(--white);border:1.5px solid var(--line);color:var(--ink);margin-top:10px}
+.link{all:unset;cursor:pointer;display:block;margin:14px auto 0;font-size:13px;color:var(--soft);text-decoration:underline;text-underline-offset:3px}
+.disc{font-size:11.5px;color:var(--mute);text-align:center;line-height:1.5;margin-top:16px}
+.done{text-align:center;padding-top:30px}
+.done .ok{width:72px;height:72px;border-radius:50%;background:var(--orange);color:#fff;display:flex;align-items:center;justify-content:center;font:700 32px var(--display);margin:0 auto 22px;animation:pop .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pop{from{transform:scale(.3);opacity:0}to{transform:none;opacity:1}}
+.done p{margin:12px 0 26px}
+footer{font-size:11px;color:var(--mute);text-align:center;padding:10px 0 22px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head><body>
+<div class="wrap">
+  <div class="top">
+    <!-- LOGO: put fundvis-logo.png next to this file. Until then this space stays empty. -->
+    <div class="logo"><img src="fundvis-logo.png" alt="Fundvis" onerror="this.style.display='none'"></div>
+    <span class="chip-top" id="topchip"></span>
+  </div>
+  <main id="app"></main>
+  <footer id="ftr"></footer>
+</div>
+<script>
+/* =====================================================================
+   1. SETTINGS
+   ===================================================================== */
+const ENGINE_URL  = "https://script.google.com/macros/s/AKfycbwfQyPTKljWWsCciPGJ-cGJBZRo0GTkQ68JkdAtc56N-nSd4ur638hCoFAYNBRnMXRfWQ/exec";   // Google Apps Script web app link
+const BOOKING_URL = "https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ1uuJn5s8GDK6sKWF6XqF9IlmaYWGG9hOdXzXRWwJV1W5vdj7qYf8ylrW6jDFglnJufSg5xZ4Tt";   // "Book a 20 minute walkthrough" button
+const MIN_FOR_AVERAGE = 3;    // the "How you compare" block only appears once this many people have answered that quiz
+const MIN_FOR_TOP     = 5;    // show the "top 25%" bar only once this many people have answered
+
+/* =====================================================================
+   2. ALL THE WORDING. Change any text here. <b>bold</b> works.
+   ===================================================================== */
+const TEXT = {
+  topChip: "Oversight self check",
+  footer:  "fundvis.org",
+
+  // Start screen
+  introKicker: "2 minute self check",
+  introTitle:  "What's the state of your oversight?",
+  introHighlight: "See how you compare to other fund managers.",
+  steps: [
+    ["Pick", "your oversight area"],
+    ["Answer", "8 quick questions"],
+    ["Get", "your score and how you compare"]
+  ],
+  pickLabel: "What do you want to check?",
+  paths: {
+    ict: { title: "ICT providers",  text: "DORA third party risk oversight" },
+    del: { title: "Delegates",      text: "Delegate oversight under AIFMD and UCITS" }
+  },
+  scopeNote: "Built for authorised AIFMs and management companies.",
+
+  // Question screens
+  regTag: "Regulatory", opsTag: "Operational",
+  whyLink: "Why we ask",
+
+  // Result screen
+  resultKicker: "Your result",
+  profileLabel: "Your profile",
+  regBar: "Regulatory readiness", opsBar: "Operational efficiency",
+  gapsLabel: "Where to focus",
+  noGaps: "No gaps found. Your answers are all at the strongest level.",
+
+  // Form
+  headline:  "<b>{score} is just the headline.</b> See what's behind it.",
+  lock1: "Your profile", lock2: "Your top 3 gaps", lock3: "How you compare to other managers",
+  formTitle: "Unlock your <em>full results</em>",
+  reassure:  "We only use your details to send your results and follow up. We never sell or share them. Unsubscribe any time.",
+  fFirst: "First name", fLast: "Last name", fEmail: "Work email", fCompany: "Company", fRole: "Role (optional)",
+  consent:   'I agree that Fundvis may contact me about my results and its services, as described in our <a href="https://fundvis.org/privacy-policy" target="_blank" rel="noopener">Privacy Policy</a>. I can unsubscribe at any time.',
+  formError: "Please fill in your name, work email and company, and tick the box.",
+  sendError: "Something went wrong. Please try again in a moment.",
+  sendButton:"Unlock my results", sending: "Sending…",
+  restart:   "Start again",
+  disclaimer:'This self assessment is indicative only and does not constitute legal or regulatory advice. <a href="https://fundvis.org/privacy-policy" target="_blank" rel="noopener">Privacy Policy</a>',
+
+  // Unlocked results screen
+  unlockedKicker: "Results unlocked",
+  heroKicker: "{name}'s {area} oversight score",
+  shortArea: { ict: "ICT", del: "delegate" },
+  cmpLabel: "How you compare",
+  cmpDiff:  "{n} points {dir} the average", above:"above", below:"below",
+  cmpEqual: "Right on the average",
+  cmpTop:   "You're in the top 25%",
+  cmpSub:   "Compared with {n} fund managers who took the {area} check.",
+  cmpEarly: "You're one of the first to take it",
+  cmpEarlySub: "We'll email you how you compare once more managers have answered.",
+  you: "You", avgLabel: "Average of managers", topLabel: "Top 25% of managers",
+  readiness: "Readiness",
+  fixLabel: "Fix these first", yourAnswer: "Your answer:",
+  glance: "Your 8 answers at a glance", strong:"Strong", partial:"Partial", gap:"Gap",
+  ctaTitle: "Close these gaps in days, not weeks",
+  ctaText:  "See how Fundvis brings your providers, due diligence and evidence into one place. 20 minutes, tailored to your answers.",
+  ctaButton:"Book a 20 minute walkthrough",
+  sentNote: "A copy of your results is on its way to {email}",
+
+  // Thank you screen
+  thanksTitle: "Thanks, {name}!",
+  thanksText:  "Your results are on their way. The Fundvis team will be in touch shortly with how you compare.",
+  siteButton:  "Visit fundvis.org", siteUrl: "https://fundvis.org",
+  againButton: "Check the other area",
+
+  // Result bands (by % of the maximum score)
+  bands: [
+    { min:80, name:"Well controlled",          text:"Your oversight framework is mature and well documented. The next step is efficiency: reducing the manual effort behind each review cycle and keeping evidence inspection ready at all times." },
+    { min:55, name:"Solid, but resource heavy", text:"The foundations are in place, but parts of your process rely on manual work, spreadsheets or individual knowledge. This is where time is lost and where gaps tend to appear during inspections." },
+    { min:30, name:"Exposed: gaps to address",  text:"Several key elements are partly in place or missing. Without a structured approach, keeping up with ongoing reviews and regulatory expectations will take significant time or external support." },
+    { min:0,  name:"High effort, high risk",    text:"Your current setup would likely struggle under regulatory scrutiny. A structured framework with standardised due diligence and central tracking would close most gaps quickly." }
+  ],
+  // Profiles: Regulatory high/low x Operational high/low (high = 55% or more)
+  profiles: {
+    HH: ["Well controlled and efficient", "Meeting requirements with a manageable workload."],
+    HL: ["Compliant, but costly",         "Requirements are met, but at a high cost in time and effort."],
+    LH: ["Efficient, with regulatory gaps","Processes run smoothly but don't fully meet regulatory expectations."],
+    LL: ["Exposed and resource heavy",    "Gaps in both compliance and process; external support is likely needed."]
+  }
+};
+
+/* The questions. Answer 1 = 2 points, answer 2 = 1 point, answer 3 = 0 points. */
+const QUIZZES = {
+  ict: [
+    { id:"ICT-05", tag:"Critical functions", type:"Regulatory", basis:"DORA Art. 28(2)",
+      q:"Have you identified which ICT providers support critical or important functions?",
+      answers:["Yes, documented and reviewed", "Informally", "Not yet"],
+      why:"Identifying critical or important functions drives how deep your oversight needs to go." },
+    { id:"ICT-07", tag:"Due diligence", type:"Operational", basis:"DORA Art. 28(4)",
+      q:"How do you run due diligence on new ICT providers?",
+      answers:["Standardised DDQ with scoring", "Ad hoc questionnaires", "No consistent process"],
+      why:"A standardised, scored DDQ makes providers comparable and decisions defensible." },
+    { id:"ICT-08", tag:"Reassessment", type:"Operational", basis:"DORA Art. 28; RTS (EU) 2024/1773",
+      q:"How often are existing ICT providers reassessed?",
+      answers:["On a risk-based schedule", "Only at renewal or after issues", "Rarely or never"],
+      why:"Risk-based reassessment keeps effort focused on the providers that matter most." },
+    { id:"ICT-09", tag:"Contracts", type:"Regulatory", basis:"DORA Art. 30",
+      q:"Are your critical ICT contracts DORA compliant, with audit rights and exit terms?",
+      answers:["Yes, all reviewed against DORA", "Some contracts", "Not reviewed yet"],
+      why:"Contracts missing DORA provisions may need renegotiation with providers, which takes time." },
+    { id:"ICT-03", tag:"Register of Information", type:"Operational", basis:"DORA Art. 28(3) (operational effort)",
+      q:"How long does it take to prepare or update your DORA Register of Information?",
+      answers:["Days", "A few weeks", "Over a month, or with external support"],
+      why:"Long preparation cycles usually point to scattered data that could be centralised." },
+    { id:"ICT-04", tag:"Register validation", type:"Regulatory", basis:"DORA Art. 28(3); CSSF submission, EBA validation",
+      q:"Did your latest Register of Information pass the EBA validation checks?",
+      answers:["Yes, first time", "After corrections or resubmission", "Significant issues, or we needed external help"],
+      why:"The CSSF forwards your Register to the EBA, where it is checked against validation rules. Most errors appear at that stage, so the data needs to stay clean all year, not just at submission." },
+    { id:"ICT-11", tag:"Exit strategies", type:"Regulatory", basis:"DORA Art. 28(8)",
+      q:"Do you have documented and tested exit strategies for critical ICT providers?",
+      answers:["Yes, tested", "Documented, not tested", "No"],
+      why:"DORA requires exit plans for critical services to be documented and sufficiently tested, not only written down." },
+    { id:"ICT-13", tag:"Evidence on demand", type:"Operational", basis:"Good practice",
+      q:"If the CSSF asked for evidence of your ICT third-party oversight tomorrow, how long would it take to compile?",
+      answers:["Hours", "Days", "Weeks"],
+      why:"Evidence that takes weeks to compile signals process gaps." }
+  ],
+  del: [
+    { id:"DEL-04", tag:"Rationale and substance", type:"Regulatory", basis:"AIFMD Art. 20; Del. Reg. (EU) 231/2013 Arts. 75 to 82; UCITS Directive Art. 13",
+      q:"Could you prove to the CSSF today why you delegated, and that you're still in control?",
+      answers:["Yes, it's documented", "Partly", "No"],
+      why:"You need to be able to show why you delegate and that you keep enough substance to supervise the delegate." },
+    { id:"DEL-03", tag:"Ownership", type:"Regulatory", basis:"CSSF 18/698 (allocation of tasks among Conducting Officers)",
+      q:"Who is responsible for overseeing your delegates?",
+      answers:["A named Conducting Officer, reporting to the Board", "Shared informally across the team", "No one specifically"],
+      why:"Oversight needs a clear owner and regular reporting to the Board to show it is actually happening." },
+    { id:"DEL-05", tag:"Initial due diligence", type:"Regulatory", basis:"CSSF 18/698 (initial due diligence)",
+      q:"Before appointing a new delegate, how do you check them?",
+      answers:["Our own structured questionnaire, scored by risk", "It depends on the team or the delegate", "We mostly rely on documents the delegate sends us"],
+      why:"Relying on the delegate's own documents makes it hard to challenge them or spot weaknesses." },
+    { id:"DEL-06", tag:"Ongoing due diligence", type:"Regulatory", basis:"CSSF 18/698 (ongoing due diligence)",
+      q:"After a delegate is appointed, how often do you review them again?",
+      answers:["Regularly, and more often for higher-risk delegates", "When we get to it", "Rarely after onboarding"],
+      why:"Oversight must continue after onboarding, with more attention on higher-risk delegates." },
+    { id:"DEL-08", tag:"Risk areas", type:"Operational", basis:"CSSF 18/698 (due diligence content)",
+      q:"Can you see at a glance which of your delegates is weakest on AML, cybersecurity or business continuity?",
+      answers:["Yes, each area is scored", "We cover these areas but don't score them", "No"],
+      why:"Scoring each risk area shows exactly where each delegate needs attention." },
+    { id:"DEL-07", tag:"Review effort", type:"Operational", basis:"Good practice",
+      q:"How long does one delegate review take your team, from start to finish?",
+      answers:["Under a week", "A few weeks", "Over a month, or we use consultants"],
+      why:"Long reviews add up quickly when you oversee many delegates." },
+    { id:"DEL-12", tag:"Follow up", type:"Operational", basis:"Good practice",
+      q:"When a review flags a problem, what happens next?",
+      answers:["An action plan with an owner and deadline, tracked until closed", "We discuss it but don't formally track it", "Nothing structured"],
+      why:"Issues without tracked follow-up are hard to prove as resolved." },
+    { id:"DEL-13", tag:"Board reporting", type:"Operational", basis:"Good practice",
+      q:"How long would it take to prepare an oversight report on all your delegates for your Board?",
+      answers:["Hours", "Days", "Weeks"],
+      why:"If Board reporting takes days or weeks, oversight data is likely scattered across emails and files." }
+  ]
+};
+
+/* =====================================================================
+   3. HOW THE PAGE WORKS (no need to touch below)
+   ===================================================================== */
+const app = document.getElementById('app');
+document.getElementById('topchip').textContent = TEXT.topChip;
+document.getElementById('ftr').textContent = TEXT.footer;
+const path = location.pathname.replace(/\//g,'');
+const SRC = new URLSearchParams(location.search).get('src') || (['nfc','qr','card'].includes(path) ? path : 'direct');
+let area = null, i = 0, A = [], RES = null, lock = false;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function show(h){ app.innerHTML = '<div class="screen">'+h+'</div>'; window.scrollTo(0,0); }
+function track(name){ try{ window.va && window.va('event',{name,data:{src:SRC,area}}) }catch(e){} }
+const LOCK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+const ICONS = {
+  ict:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/><path d="M7 9l2 2 4-4"/></svg>',
+  del:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="6" r="2.5"/><circle cx="5" cy="18" r="2.5"/><circle cx="19" cy="18" r="2.5"/><path d="M12 8.5v3M12 11.5L6.5 16M12 11.5l5.5 4.5"/></svg>'
+};
+
+function intro(){
+  area=null;
+  show(`<div class="k">${TEXT.introKicker}</div>
+  <h1>${TEXT.introTitle}</h1>
+  <div class="sub"><span class="hl">${TEXT.introHighlight}</span></div>
+  <div class="steps">${TEXT.steps.map((s,n)=>`<div><i>${n+1}</i><b>${s[0]}</b>${s[1]}</div>`).join('')}</div>
+  <div class="pick-label">${TEXT.pickLabel}</div>
+  <div class="paths">
+    ${['ict','del'].map(k=>`<button class="path" onclick="start('${k}')"><span class="ic">${ICONS[k]}</span>
+      <span class="t"><b>${TEXT.paths[k].title}</b><span>${TEXT.paths[k].text}</span></span><span class="ar">›</span></button>`).join('')}
+  </div>
+  <div class="scope">${TEXT.scopeNote}</div>`);
+}
+function start(k){ area=k; i=0; A=new Array(QUIZZES[k].length).fill(null); track('start'); question(); }
+function question(){
+  const Q=QUIZZES[area], q=Q[i]; lock=false;
+  const dots=Q.map((_,n)=>`<span class="${n<i?'dn':n===i?'now':''}"></span>`).join('');
+  show(`<div class="qhead"><button class="backbtn" onclick="back()" aria-label="Back">‹</button><div class="dots">${dots}</div><div class="count">${i+1}/${Q.length}</div></div>
+  <div class="tags"><span class="tag ${q.type==='Regulatory'?'reg':'ops'}">${q.type==='Regulatory'?TEXT.regTag:TEXT.opsTag}</span><span class="tag topic">${q.tag}</span></div>
+  <div class="qt">${q.q}</div>
+  <div class="opts">${q.answers.map((a,n)=>`<button class="opt${A[i]===n?' sel':''}" onclick="pick(${n},this)"><span class="l">${'ABC'[n]}</span><span>${a}</span></button>`).join('')}</div>
+  <button class="whylink" onclick="this.nextElementSibling.classList.toggle('open');this.classList.toggle('on')">${TEXT.whyLink}</button>
+  <div class="whybox"><div>${q.why}</div></div>`);
+}
+function pick(n,el){
+  if(lock) return; lock=true; A[i]=n;
+  document.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel')); el.classList.add('sel');
+  setTimeout(()=>{ i++; i<QUIZZES[area].length ? question() : result(); }, 380);
+}
+function back(){ if(i===0) intro(); else { i--; question(); } }
+
+function result(){
+  track('finished');
+  const Q=QUIZZES[area], pts=n=>2-n;
+  let tot=0,reg=0,ops=0,regMax=0,opsMax=0;
+  Q.forEach((q,k)=>{ const p=pts(A[k]); tot+=p; if(q.type==='Regulatory'){reg+=p;regMax+=2}else{ops+=p;opsMax+=2} });
+  const pct=Math.round(tot/(Q.length*2)*100), rp=Math.round(reg/regMax*100), op=Math.round(ops/opsMax*100);
+  const band=TEXT.bands.find(b=>pct>=b.min);
+  const prof=TEXT.profiles[(rp>=55?'H':'L')+(op>=55?'H':'L')];
+  const gaps=Q.map((q,k)=>({q,s:pts(A[k])})).filter(g=>g.s<2).sort((a,b)=>a.s-b.s);
+  RES={pct,rp,op,band,prof,gapsList:gaps,gaps:gaps.map(g=>g.q.tag).join(', ')||'none'};
+  const R=78, C=2*Math.PI*R;
+  const col = pct>=80?'var(--orange2)':pct>=55?'var(--orange)':pct>=30?'var(--terra)':'var(--risk)';
+  show(`<div class="k" style="text-align:center">${TEXT.resultKicker} · ${TEXT.paths[area].title}</div>
+  <div class="ring"><svg width="190" height="190"><circle cx="95" cy="95" r="${R}" fill="none" stroke="var(--peach)" stroke-width="14"/>
+    <circle id="arc" cx="95" cy="95" r="${R}" fill="none" stroke="${col}" stroke-width="14" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C}" style="transition:stroke-dashoffset 1.2s cubic-bezier(.22,1,.36,1)"/></svg>
+    <div class="c"><div class="n"><span id="num">0</span><small>%</small></div></div></div>
+  <div style="text-align:center"><span class="bp" style="color:${col};border-color:${col}">${band.name}</span></div>
+  <div class="headline">${TEXT.headline.replace('{score}', pct+'%')}</div>
+  <div class="locks">
+    <div class="lock"><div class="lk">${LOCK}</div><div class="lt">${TEXT.lock1}</div><div class="blur"><b>${prof[0]}</b><span>${prof[1]}</span></div></div>
+    <div class="lock"><div class="lk">${LOCK}</div><div class="lt">${TEXT.lock2}</div><div class="blur">${(gaps.length?gaps:Q.map(q=>({q}))).slice(0,3).map(g=>`<span class="pill">${g.q.tag}</span>`).join('')}</div></div>
+    <div class="lock"><div class="lk">${LOCK}</div><div class="lt">${TEXT.lock3}</div><div class="blur"><div class="fake"><i style="width:${Math.max(18,pct)}%"></i></div><div class="fake"><i style="width:62%;background:var(--ink)"></i></div></div></div>
+  </div>
+  <div class="formcard" id="fc"><h2>${TEXT.formTitle}</h2>
+   <form id="f" novalidate>
+    <div class="row2"><input type="text" name="firstname" placeholder="${TEXT.fFirst}" autocomplete="given-name"><input type="text" name="lastname" placeholder="${TEXT.fLast}" autocomplete="family-name"></div>
+    <input type="email" name="email" placeholder="${TEXT.fEmail}" autocomplete="email">
+    <input type="text" name="company" placeholder="${TEXT.fCompany}" autocomplete="organization">
+    <label class="ck"><input type="checkbox" name="consent"><span>${TEXT.consent}</span></label>
+    <div class="err" id="er"></div>
+    <button class="btn o" type="submit" id="sb">${TEXT.sendButton}</button>
+    <div class="reassure">${TEXT.reassure}</div>
+   </form></div>
+  <button class="link" onclick="intro()">${TEXT.restart}</button>
+  <div class="disc">${TEXT.disclaimer}</div>`);
+  requestAnimationFrame(()=>setTimeout(()=>{
+    document.getElementById('arc').style.strokeDashoffset = C*(1-pct/100);
+    const el=document.getElementById('num'), t0=performance.now();
+    (function f(t){const p=Math.min((t-t0)/1100,1); el.textContent=Math.round(pct*(1-Math.pow(1-p,3))); if(p<1) requestAnimationFrame(f)})(t0);
+  },60));
+  document.getElementById('f').onsubmit=submit;
+}
+async function submit(e){
+  e.preventDefault(); const d=Object.fromEntries(new FormData(e.target)); const er=document.getElementById('er');
+  const ok=d.firstname&&d.lastname&&/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.email||'')&&d.company&&d.consent;
+  er.textContent=TEXT.formError; er.style.display=ok?'none':'block'; if(!ok) return;
+  const sb=document.getElementById('sb'); sb.disabled=true; sb.textContent=TEXT.sending;
+  const Q=QUIZZES[area];
+  const payload={
+    area, areaTitle:TEXT.paths[area].title, src:SRC,
+    first:d.firstname.trim(), last:d.lastname.trim(), email:d.email.trim(), company:d.company.trim(),
+    pct:RES.pct, rp:RES.rp, op:RES.op, band:RES.band.name, bandText:RES.band.text, profile:RES.prof[0], profileText:RES.prof[1],
+    gaps:RES.gapsList.slice(0,3).map(g=>({tag:g.q.tag, why:g.q.why, answer:g.q.answers[A[Q.indexOf(g.q)]]})),
+    answers:Q.map((q,k)=>({id:q.id, tag:q.tag, answer:q.answers[A[k]], score:2-A[k]}))
+  };
+  track('lead');
+  let stats=null;
+  if(ENGINE_URL){
+    try{
+      const res=await fetch(ENGINE_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
+      stats=await res.json(); if(!stats.ok) throw new Error(stats.error||'engine');
+    }catch(err){ sb.disabled=false; sb.textContent=TEXT.sendButton; er.textContent=TEXT.sendError; er.style.display='block'; return; }
+  } else {
+    console.log('TEST MODE (no ENGINE_URL set). Payload:', payload);
+    stats={ok:true,n:23,avg:61,top:81,demo:true};
+  }
+  unlocked(payload, stats);
+}
+function unlocked(p, st){
+  const other = area==='ict'?'del':'ict';
+  const hasAvg = st && st.n>=MIN_FOR_AVERAGE, hasTop = st && st.n>=MIN_FOR_TOP;
+  const diff = hasAvg ? p.pct-st.avg : 0;
+  const inTop = hasTop && p.pct>=st.top;
+  const cmpHead = !hasAvg ? TEXT.cmpEarly : inTop ? '▲ '+TEXT.cmpTop : diff===0 ? TEXT.cmpEqual : (diff>0?'▲ ':'▼ ')+TEXT.cmpDiff.replace('{n}',Math.abs(diff)).replace('{dir}',diff>0?TEXT.above:TEXT.below);
+  const cmpSub  = hasAvg ? TEXT.cmpSub.replace('{n}',st.n).replace('{area}',TEXT.shortArea[area]) : TEXT.cmpEarlySub;
+  const bar=(lbl,val,cls,bold)=>`<div class="cb"><div class="cl"><span${bold?' style="font-weight:700;color:var(--ink)"':''}>${lbl}</span><b class="${cls}">${val}%</b></div><div class="ct"><i class="${cls}" data-w="${val}"></i></div></div>`;
+  const col=['#2F7A4D','#C26A22','#B4472A'], lab=[TEXT.strong,TEXT.partial,TEXT.gap];
+  const counts=[2,1,0].map(sc=>p.answers.filter(a=>a.score===sc).length);
+  show(`<div class="unl">
+  <div class="k" style="text-align:center">${TEXT.unlockedKicker}</div>
+  <div class="hero"><div class="hk">${TEXT.heroKicker.replace('{name}',esc(p.first)).replace('{area}',TEXT.shortArea[area])}</div>
+    <div class="hn"><span id="num">0</span>%</div><span class="hb">${p.band}</span><p>${p.bandText}</p></div>
+
+  ${!hasAvg ? '' : `<div class="ucard"><div class="lbl" style="color:var(--orange2)">${TEXT.cmpLabel}</div>
+    <div class="ch">${cmpHead}</div><div class="cs">${cmpSub}</div>
+    ${[[TEXT.you,p.pct,'you',true,3]].concat(hasAvg?[[TEXT.avgLabel,st.avg,'avg',false,1]]:[]).concat(hasTop?[[TEXT.topLabel,st.top,'tp',false,2]]:[])
+        .sort((a,b)=>b[1]-a[1]||b[4]-a[4]).map(r=>bar(r[0],r[1],r[2],r[3])).join('')}
+    ${st&&st.demo?'<div class="demo">Demo numbers (test mode)</div>':''}
+  </div>`}
+
+  <div class="two"><div class="ucard"><div class="lbl">${TEXT.lock1}</div><div class="pn">${p.profile}</div><div class="pt">${p.profileText}</div></div>
+   <div class="ucard"><div class="lbl">${TEXT.readiness}</div>
+    <div class="rl">${TEXT.regBar}<b>${p.rp}%</b></div><div class="ct sm"><i class="ink" data-w="${p.rp}"></i></div>
+    <div class="rl" style="margin-top:12px">${TEXT.opsBar}<b>${p.op}%</b></div><div class="ct sm"><i class="you" data-w="${p.op}"></i></div></div></div>
+
+  ${p.gaps.length?`<div class="ucard cream"><div class="lbl" style="color:var(--orange2)">${TEXT.fixLabel}</div>
+    ${p.gaps.map((g,n)=>`<div class="fx"><span class="fn">${n+1}</span><div><b>${g.tag}</b><span>${g.why}</span><em>${TEXT.yourAnswer} ${g.answer}</em></div></div>`).join('')}</div>`
+    :`<div class="ucard cream"><div class="lbl" style="color:var(--orange2)">${TEXT.fixLabel}</div><div class="pt">${TEXT.noGaps}</div></div>`}
+
+  <div class="ucard"><div class="lbl">${TEXT.glance}</div>
+    <div class="sum">${[0,1,2].filter(k=>counts[k]).map(k=>`<span style="background:${['#E8F3EC','#FFF1E3','#FCE4DC'][k]};color:${col[k]}">${counts[k]} ${lab[k]}</span>`).join('')}</div>
+    <div class="dots2">${p.answers.map(a=>`<div><i style="background:${col[2-a.score]}"></i>${a.tag}</div>`).join('')}</div></div>
+
+  <div class="ucard ctacard"><h3>${TEXT.ctaTitle}</h3><p>${TEXT.ctaText}</p>
+    <a class="btn o" href="${BOOKING_URL}" target="_blank" rel="noopener">${TEXT.ctaButton}</a>
+    <div class="sent">✓ ${TEXT.sentNote.replace('{email}',esc(p.email))}</div></div>
+
+  <button class="btn g" onclick="start('${other}')">${TEXT.againButton}: ${TEXT.paths[other].title}</button>
+  <div class="disc">${TEXT.disclaimer}</div></div>`);
+  requestAnimationFrame(()=>setTimeout(()=>{
+    document.querySelectorAll('[data-w]').forEach(el=>el.style.width=el.dataset.w+'%');
+    const el=document.getElementById('num'), t0=performance.now();
+    (function f(t){const q=Math.min((t-t0)/1000,1); el.textContent=Math.round(p.pct*(1-Math.pow(1-q,3))); if(q<1) requestAnimationFrame(f)})(t0);
+  },80));
+}
+intro();
+</script>
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body></html>
