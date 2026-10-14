@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Live oversight scores · Fundvis</title>
+<link rel="icon" href="fundvis-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+/* Same colours and fonts as the quiz */
+:root{
+  --ink:#181818; --soft:#6F665F; --mute:#A39A92;
+  --orange:#EF9355; --orange2:#E07E3C; --terra:#D99661; --risk:#C56A34;
+  --peach:#FCEADD; --peach2:#FDF4EC; --page:#FBF4EC; --white:#fff;
+  --line:rgba(24,24,24,.09);
+  --display:'Poppins',system-ui,sans-serif; --body:'Inter',system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--page);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased;overflow:hidden}
+.screen{height:100vh;display:grid;grid-template-rows:auto 1fr auto;gap:2.2vh;padding:3.4vh 3.2vw}
+
+/* top */
+.top{display:flex;align-items:center;justify-content:space-between}
+.top img{height:4.6vh;display:block}
+.live{display:flex;align-items:center;gap:.8vw;font:600 1.5vh var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--orange2);background:var(--white);border:1px solid var(--line);padding:1.2vh 1.6vw;border-radius:99px}
+.live i{width:1.2vh;height:1.2vh;border-radius:50%;background:var(--orange2);animation:pulse 1.6s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(224,126,60,.5)}70%{box-shadow:0 0 0 1.4vh rgba(224,126,60,0)}100%{box-shadow:0 0 0 0 rgba(224,126,60,0)}}
+
+/* main grid */
+.main{display:grid;grid-template-columns:1.15fr 1fr;gap:2vw;min-height:0}
+.card{background:var(--white);border:1px solid var(--line);border-radius:3vh;padding:3.2vh 2.2vw;min-height:0}
+.lbl{font:600 1.5vh var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin-bottom:1.4vh}
+.lbl.o{color:var(--orange2)}
+
+/* hero: average */
+.hero{display:grid;grid-template-rows:auto 1fr auto;gap:2vh}
+.hero h1{font:700 4.6vh/1.1 var(--display);letter-spacing:-.02em}
+.hero h1 em{font-style:normal;background:linear-gradient(transparent 58%,rgba(239,147,85,.38) 58%);padding:0 .3vw}
+.avgrow{display:flex;align-items:center;gap:3vw;min-height:0}
+.ring{position:relative;width:30vh;height:30vh;flex:none}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .n{font:700 10vh/1 var(--display);letter-spacing:-.04em}
+.ring .n small{font-size:4.4vh;margin-left:.2vw;color:var(--soft)}
+.ring .b{font:600 1.7vh var(--body);color:var(--soft);margin-top:.6vh}
+.avgside{display:flex;flex-direction:column;gap:1.6vh}
+.big{font:700 3.4vh/1.2 var(--display)}
+.big b{color:var(--orange2)}
+.small{font-size:1.9vh;color:var(--soft);line-height:1.5}
+.areas{display:grid;grid-template-columns:1fr 1fr;gap:1.2vw}
+.area{background:var(--peach2);border-radius:2.2vh;padding:2vh 1.4vw}
+.area .t{font:600 1.7vh var(--body);color:var(--soft)}
+.area .v{font:700 5vh/1.1 var(--display);margin-top:.6vh}
+.area .v small{font-size:2.4vh;color:var(--soft)}
+.area .s{font-size:1.6vh;color:var(--mute);margin-top:.3vh}
+
+/* right column */
+.side{display:grid;grid-template-rows:auto auto 1fr;gap:1.6vh;min-height:0}
+.side .card{padding:2.4vh 2vw}
+.bars{display:flex;align-items:flex-end;gap:1vw;height:12vh;margin-top:.4vh}
+.bars div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:.6vh}
+.bars span{width:100%;border-radius:1vh 1vh .4vh .4vh;background:var(--peach);transition:height .8s cubic-bezier(.22,1,.36,1);min-height:.6vh}
+.bars div.hi span{background:var(--orange)}
+.bars b{font:600 1.6vh var(--body);color:var(--soft)}
+.bars em{font:700 1.8vh var(--display);font-style:normal}
+.weak{background:var(--ink);color:var(--white);border:0}
+.weak .lbl{color:var(--orange)}
+.weak .w{font:700 3.6vh/1.15 var(--display)}
+.weak .ws{font-size:1.8vh;color:#D9CFC6;margin-top:.8vh}
+.feed{display:flex;flex-direction:column;gap:1vh;overflow:hidden}
+.row{display:flex;align-items:center;justify-content:space-between;background:var(--peach2);border-radius:1.4vh;padding:1vh 1.2vw;animation:in .5s cubic-bezier(.22,1,.36,1)}
+.row .a{font:500 1.8vh var(--body);color:var(--soft)}
+.row .p{font:700 2.4vh var(--display)}
+.row .ago{font-size:1.5vh;color:var(--mute);margin-left:1vw}
+@keyframes in{from{opacity:0;transform:translateY(1vh)}to{opacity:1;transform:none}}
+
+/* call to action */
+.cta{display:flex;align-items:center;justify-content:space-between;gap:2vw;background:var(--orange);border-radius:3vh;padding:2.4vh 2.4vw}
+.cta .t{font:700 3.8vh/1.1 var(--display);color:var(--ink)}
+.cta .s{font:500 2vh var(--body);color:#3A2414;margin-top:.6vh}
+.cta .r{display:flex;align-items:center;gap:1.4vw}
+.tap{display:flex;align-items:center;gap:.8vw;font:600 2vh var(--body);color:var(--ink)}
+.tap svg{width:4.4vh;height:4.4vh}
+.qr{background:var(--white);border-radius:1.6vh;padding:1vh;width:12vh;height:12vh}
+.qr img,.qr canvas{width:100%!important;height:100%!important;display:block}
+.or{font:500 1.6vh var(--body);color:#3A2414}
+
+/* empty state */
+.empty .avgrow,.empty .areas{opacity:.35}
+.note{font-size:1.6vh;color:var(--mute)}
+</style>
+</head><body>
+<div class="screen" id="screen">
+  <header class="top">
+    <img src="fundvis-logo.png" alt="Fundvis">
+    <div class="live"><i></i><span id="evname">Live today</span></div>
+  </header>
+
+  <section class="main">
+    <div class="card hero" id="hero">
+      <div>
+        <div class="lbl o">Oversight self check</div>
+        <h1>How does <em>your</em> oversight compare?</h1>
+      </div>
+      <div class="avgrow">
+        <div class="ring">
+          <svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="84" fill="none" stroke="var(--peach)" stroke-width="16"/>
+          <circle id="arc" cx="100" cy="100" r="84" fill="none" stroke="var(--orange)" stroke-width="16" stroke-linecap="round" stroke-dasharray="527.8" stroke-dashoffset="527.8" style="transition:stroke-dashoffset 1.2s cubic-bezier(.22,1,.36,1)"/></svg>
+          <div class="c"><div class="n"><span id="avg">0</span><small>%</small></div><div class="b">average score</div></div>
+        </div>
+        <div class="avgside">
+          <div class="big" id="count">Be one of the first to take the check</div>
+          <div class="small" id="topline">Eight questions. Two minutes. See where you stand against your peers.</div>
+        </div>
+      </div>
+      <div class="areas">
+        <div class="area"><div class="t">ICT providers</div><div class="v" id="ictv">0<small>%</small></div><div class="s" id="icts">No scores yet</div></div>
+        <div class="area"><div class="t">Delegates</div><div class="v" id="delv">0<small>%</small></div><div class="s" id="dels">No scores yet</div></div>
+      </div>
+    </div>
+
+    <div class="side">
+      <div class="card">
+        <div class="lbl">How fund managers score</div>
+        <div class="bars" id="bars"></div>
+      </div>
+      <div class="card weak">
+        <div class="lbl">Where most managers lose points</div>
+        <div class="w" id="weak">Waiting for the first answers</div>
+        <div class="ws" id="weaks">The question most people struggle with shows up here.</div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;min-height:0">
+        <div class="lbl">Just in</div>
+        <div class="feed" id="feed"><div class="note">New scores appear here as people finish.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="cta">
+    <div>
+      <div class="t">Think you can beat the average?</div>
+      <div class="s">Take the 2 minute check. Your answers stay anonymous on this screen.</div>
+    </div>
+    <div class="r">
+      <div class="tap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M10 18h4"/><path d="M20 8a6 6 0 0 1 0 8M22.5 6a9.5 9.5 0 0 1 0 12"/></svg>Tap your phone on the tag</div>
+      <div class="or">or scan</div>
+      <div class="qr" id="qr"></div>
+    </div>
+  </footer>
+</div>
+
+<script>
+/* =====================================================================
+   SETTINGS
+   Open the screen with your event in the link, for example:
+   https://fundvis-oversight-self-check.vercel.app/board?name=ICT%20Spring%202026
+     name  = how the event is written on the screen
+     event = optional: only count scores from links tagged ?event=yourevent
+   Add &demo=1 to see the screen filled with sample numbers.
+   ===================================================================== */
+const ENGINE_URL = "https://script.google.com/macros/s/AKfycbwfQyPTKljWWsCciPGJ-cGJBZRo0GTkQ68JkdAtc56N-nSd4ur638hCoFAYNBRnMXRfWQ/exec";
+const QUIZ_URL   = "https://fundvis-oversight-self-check.vercel.app/qr";
+const REFRESH_SECONDS = 10;
+const MIN_TO_SHOW = 1;          // show averages as soon as there is a score
+
+const P = new URLSearchParams(location.search);
+const EVENT = (P.get('event') || '').trim().toLowerCase();
+const NAME  = (P.get('name') || '').trim();
+const DEMO  = P.get('demo') === '1';
+const $ = id => document.getElementById(id);
+const AREA = { ict: 'ICT providers', del: 'Delegates' };
+
+$('evname').textContent = NAME ? 'Live at ' + NAME : 'Live today';
+try { new QRCode($('qr'), { text: QUIZ_URL + (EVENT ? '?event=' + encodeURIComponent(EVENT) : ''), width: 256, height: 256, colorDark: '#181818', colorLight: '#ffffff' }); } catch (e) {}
+
+function render(d) {
+  const all = d.all || { n: 0 }, ok = all.n >= MIN_TO_SHOW;
+  $('hero').classList.toggle('empty', !ok);
+  const avg = ok ? all.avg : 0;
+  $('avg').textContent = avg;
+  $('arc').style.strokeDashoffset = 527.8 * (1 - avg / 100);
+  if (ok) {
+    $('count').innerHTML = '<b>' + all.n + '</b> fund managers have taken the check' + (d.today ? ', <b>' + d.today + '</b> today' : '');
+    $('topline').textContent = 'Top 25% scored ' + all.top + '% or more. Where do you land?';
+  } else {
+    $('count').textContent = 'Be one of the first to take the check';
+    $('topline').textContent = 'Eight questions. Two minutes. See where you stand against your peers.';
+  }
+  ['ict', 'del'].forEach(k => {
+    const a = d[k] || { n: 0 };
+    $(k + 'v').innerHTML = (a.n >= MIN_TO_SHOW ? a.avg : 0) + '<small>%</small>';
+    $(k + 's').textContent = a.n ? a.n + (a.n === 1 ? ' score' : ' scores') : 'No scores yet';
+  });
+
+  const dist = d.dist || [0, 0, 0, 0, 0], max = Math.max(1, ...dist), hi = dist.indexOf(Math.max(...dist));
+  const labels = ['0 to 19', '20 to 39', '40 to 59', '60 to 79', '80 to 100'];
+  $('bars').innerHTML = dist.map((v, i) => '<div class="' + (v && i === hi ? 'hi' : '') + '"><em>' + v + '</em><span style="height:' + Math.round(v / max * 100) + '%"></span><b>' + labels[i] + '</b></div>').join('');
+
+  if (ok && all.weakest) {
+    $('weak').textContent = all.weakest.tag;
+    $('weaks').textContent = 'The question managers struggle with most. Ask us why it trips people up.';
+  } else {
+    $('weak').textContent = 'Waiting for the first answers';
+    $('weaks').textContent = 'The question most people struggle with shows up here.';
+  }
+
+  const rec = (d.recent || []).slice(0, 3);
+  $('feed').innerHTML = rec.length
+    ? rec.map(r => '<div class="row"><span class="a">' + (AREA[r.area] || 'Self check') + '</span><span><span class="p">' + r.pct + '%</span><span class="ago">' + (r.ago < 1 ? 'just now' : r.ago + ' min ago') + '</span></span></div>').join('')
+    : '<div class="note">New scores appear here as people finish.</div>';
+}
+
+function demo() {
+  const n = 24 + Math.floor(Math.random() * 5);
+  return { today: 6, all: { n, avg: 58, top: 76, weakest: { tag: 'Exit strategies', pct: 31 } },
+    ict: { n: 14, avg: 55 }, del: { n: n - 14, avg: 62 }, dist: [1, 4, 8, 9, 3],
+    recent: [{ area: 'ict', pct: 72, ago: 0 }, { area: 'del', pct: 49, ago: 3 }, { area: 'ict', pct: 64, ago: 6 }, { area: 'del', pct: 81, ago: 9 }, { area: 'ict', pct: 38, ago: 12 }] };
+}
+
+async function load() {
+  if (DEMO) return render(demo());
+  try {
+    const r = await fetch(ENGINE_URL + '?board=1' + (EVENT ? '&event=' + encodeURIComponent(EVENT) : '') + '&t=' + Date.now());
+    const d = await r.json();
+    if (d && d.ok) render(d);
+  } catch (e) { /* keep the last numbers on screen if the wifi drops */ }
+}
+render({});
+load();
+setInterval(load, REFRESH_SECONDS * 1000);
+</script>
+</body></html>
