@@ -46,7 +46,7 @@ html,body{height:100%;background:var(--page);color:var(--ink);font-family:var(--
 .avgside{display:flex;flex-direction:column;gap:1.6vh}
 .big{font:700 3.4vh/1.2 var(--display)}
 .big b{color:var(--orange2)}
-.small{font-size:1.9vh;color:var(--soft);line-height:1.5}
+.small{font-size:2.4vh;color:#4F4842;line-height:1.45}
 .areas{display:grid;grid-template-columns:1fr 1fr;gap:1.2vw}
 .area{background:var(--peach2);border-radius:2.2vh;padding:2vh 1.4vw}
 .area .t{font:600 1.7vh var(--body);color:var(--soft)}
@@ -63,10 +63,10 @@ html,body{height:100%;background:var(--page);color:var(--ink);font-family:var(--
 .bars div.hi span{background:var(--orange)}
 .bars b{font:600 1.6vh var(--body);color:var(--soft)}
 .bars em{font:700 1.8vh var(--display);font-style:normal}
-.weak{background:var(--ink);color:var(--white);border:0}
+.weak{background:#1b2a4a;color:var(--white);border:0}
 .weak .lbl{color:var(--orange)}
 .weak .w{font:700 3.6vh/1.15 var(--display)}
-.weak .ws{font-size:1.8vh;color:#D9CFC6;margin-top:.8vh}
+.weak .ws{font-size:1.9vh;color:#C3CADB;margin-top:.8vh}
 .feed{display:flex;flex-direction:column;gap:1vh;overflow:hidden}
 .row{display:flex;align-items:center;justify-content:space-between;background:var(--peach2);border-radius:1.4vh;padding:1vh 1.2vw;animation:in .5s cubic-bezier(.22,1,.36,1)}
 .row .a{font:500 1.8vh var(--body);color:var(--soft)}
@@ -77,10 +77,10 @@ html,body{height:100%;background:var(--page);color:var(--ink);font-family:var(--
 /* call to action */
 .cta{display:flex;align-items:center;justify-content:space-between;gap:2vw;background:var(--orange);border-radius:3vh;padding:2.4vh 2.4vw}
 .cta .t{font:700 3.8vh/1.1 var(--display);color:var(--ink)}
-.cta .s{font:500 2vh var(--body);color:#3A2414;margin-top:.6vh}
+.cta .s{font:500 2vh var(--body);color:#3A2414;margin-top:1.4vh}
 .cta .r{display:flex;align-items:center;gap:1.4vw}
-.tap{display:flex;align-items:center;gap:.8vw;font:600 2vh var(--body);color:var(--ink)}
-.tap svg{width:4.4vh;height:4.4vh}
+.tap{display:flex;align-items:center;gap:1vw;font:700 3vh var(--body);color:var(--ink)}
+.tap svg{width:7vh;height:7vh}
 .qr{background:var(--white);border-radius:1.6vh;padding:1vh;width:12vh;height:12vh}
 .qr img,.qr canvas{width:100%!important;height:100%!important;display:block}
 .or{font:500 1.6vh var(--body);color:#3A2414}
@@ -130,7 +130,7 @@ html,body{height:100%;background:var(--page);color:var(--ink);font-family:var(--
         <div class="ws" id="weaks">The question most people struggle with shows up here.</div>
       </div>
       <div class="card" style="display:flex;flex-direction:column;min-height:0">
-        <div class="lbl">Just in</div>
+        <div class="lbl">Latest scores</div>
         <div class="feed" id="feed"><div class="note">New scores appear here as people finish.</div></div>
       </div>
     </div>
@@ -168,7 +168,7 @@ const EVENT = (P.get('event') || '').trim().toLowerCase();
 const NAME  = (P.get('name') || '').trim();
 const DEMO  = P.get('demo') === '1';
 const $ = id => document.getElementById(id);
-const AREA = { ict: 'ICT providers', del: 'Delegates' };
+const AREA = { ict: 'ICT oversight check', del: 'Delegate oversight check' };
 
 $('evname').textContent = NAME ? 'Live at ' + NAME : 'Live today';
 try { new QRCode($('qr'), { text: QUIZ_URL + (EVENT ? '?event=' + encodeURIComponent(EVENT) : ''), width: 256, height: 256, colorDark: '#181818', colorLight: '#ffffff' }); } catch (e) {}
@@ -180,7 +180,7 @@ function render(d) {
   $('avg').textContent = avg;
   $('arc').style.strokeDashoffset = 527.8 * (1 - avg / 100);
   if (ok) {
-    $('count').innerHTML = '<b>' + all.n + '</b> fund managers have taken the check' + (d.today ? ', <b>' + d.today + '</b> today' : '');
+    $('count').innerHTML = '<b>' + all.n + '</b> fund managers have taken the check';
     $('topline').textContent = 'Top 25% scored ' + all.top + '% or more. Where do you land?';
   } else {
     $('count').textContent = 'Be one of the first to take the check';
@@ -198,7 +198,7 @@ function render(d) {
 
   if (ok && all.weakest) {
     $('weak').textContent = all.weakest.tag;
-    $('weaks').textContent = 'The question managers struggle with most. Ask us why it trips people up.';
+    $('weaks').textContent = 'The lowest scoring area across all fund managers. Ask us how to close this gap.';
   } else {
     $('weak').textContent = 'Waiting for the first answers';
     $('weaks').textContent = 'The question most people struggle with shows up here.';
@@ -206,7 +206,7 @@ function render(d) {
 
   const rec = (d.recent || []).slice(0, 3);
   $('feed').innerHTML = rec.length
-    ? rec.map(r => '<div class="row"><span class="a">' + (AREA[r.area] || 'Self check') + '</span><span><span class="p">' + r.pct + '%</span><span class="ago">' + (r.ago < 1 ? 'just now' : r.ago + ' min ago') + '</span></span></div>').join('')
+    ? rec.map(r => '<div class="row"><span class="a">' + (AREA[r.area] || 'Self check') + '</span><span><span class="p">' + r.pct + '%</span></span></div>').join('')
     : '<div class="note">New scores appear here as people finish.</div>';
 }
 
