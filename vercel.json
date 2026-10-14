@@ -2,6 +2,7 @@
   "rewrites": [
     { "source": "/nfc", "destination": "/index.html" },
     { "source": "/qr", "destination": "/index.html" },
-    { "source": "/card", "destination": "/index.html" }
+    { "source": "/card", "destination": "/index.html" },
+    { "source": "/board", "destination": "/board.html" }
   ]
 }
